@@ -2,7 +2,7 @@
 
 ## Domain Proyek
 
-Banyak platform digital dan perpustakaan sekolah menghadapi tantangan dalam memberikan rekomendasi buku yang relevan karena preferensi pembaca sangat bervariasi dan dapat berubah seiring waktu. Ketidaksesuaian rekomendasi berpotensi mengurangi keterlibatan pengguna dan menurunkan minat baca, terutama di lingkungan sekolah maupun sistem daring. Dengan memanfaatkan data interaksi pengguna dan informasi konten buku, sistem rekomendasi mampu meningkatkan relevansi saran bacaan serta membantu pengguna menemukan buku yang sesuai dengan ketertarikan mereka. Penelitian oleh Ardiansyah et al. (2023) menunjukkan bahwa sistem rekomendasi berbasis konten di perpustakaan sekolah dapat meningkatkan akurasi pencarian bacaan bagi siswa. Sementara itu, studi oleh Irfan et al. (2014) menunjukkan bahwa sistem rekomendasi buku online mampu memberikan saran yang lebih sesuai dengan minat pengguna berdasarkan preferensi kolektif.
+Banyak platform digital dan perpustakaan sekolah menghadapi tantangan dalam memberikan rekomendasi buku yang relevan karena preferensi pembaca sangat bervariasi dan dapat berubah seiring waktu. Ketidaksesuaian rekomendasi berpotensi mengurangi keterlibatan pengguna dan menurunkan minat baca. Dengan memanfaatkan data interaksi pengguna dan informasi konten buku, sistem rekomendasi mampu meningkatkan relevansi saran bacaan serta membantu pengguna menemukan buku yang sesuai dengan ketertarikan mereka. Penelitian oleh Ardiansyah et al. (2023) menunjukkan bahwa sistem rekomendasi berbasis konten di perpustakaan sekolah dapat meningkatkan akurasi pencarian bacaan bagi siswa. Sementara itu, studi oleh Irfan et al. (2014) menunjukkan bahwa sistem rekomendasi buku online mampu memberikan saran yang lebih sesuai dengan minat pengguna berdasarkan preferensi kolektif.
 
 Referensi:
 
@@ -13,8 +13,6 @@ Irfan, M., Cahyani, A. D., & Hastarita, F. R. (2014). Sistem Rekomendasi: Buku O
 ## Business Understanding
 
 ### Problem Statements
-Menjelaskan pernyataan masalah latar belakang:
-
 - Bagaimana cara memberikan rekomendasi buku yang relevan kepada pengguna berdasarkan preferensi mereka? Pengguna sering kali kesulitan menemukan buku yang sesuai dengan minatnya karena banyaknya pilihan yang tersedia. Diperlukan sistem yang dapat menyaring dan menyarankan buku secara personal.
 - Bagaimana memanfaatkan data historis pengguna (seperti rating) untuk membangun sistem rekomendasi yang efektif? Rekomendasi manual atau statis tidak mampu mengikuti perubahan preferensi pengguna. Sistem rekomendasi berbasis data dapat mempelajari pola-pola interaksi dan memberikan saran yang dinamis serta lebih relevan.
 
@@ -24,14 +22,14 @@ Menjelaskan pernyataan masalah latar belakang:
 Evaluasi ini diperlukan untuk mengetahui seberapa baik model dalam memprediksi rating yang diberikan pengguna terhadap buku.
 
 ### Solution statements
-- Menerapkan algoritma K-Nearest Neighbors (KNN) untuk content-based filtering. Model ini dipilih karena kesederhanaan dan efektivitasnya dalam mengidentifikasi item serupa (misalnya, buku) berdasarkan fitur-fiturnya seperti genre, penulis, atau kata kunci.
-- Menggunakan Singular Value Decomposition (SVD) untuk collaborative filtering. SVD efektif dalam menemukan faktor-faktor laten yang menjelaskan interaksi pengguna-item, sehingga cocok untuk menghasilkan rekomendasi berdasarkan perilaku dan preferensi pengguna di masa lalu.
-- Mengevaluasi kinerja sistem menggunakan metrik precision@k dan Root Mean Squared Error (RMSE). Metrik-metrik ini membantu menilai akurasi prediksi peringkat dan relevansi rekomendasi yang diberikan oleh sistem.
+- Menerapkan algoritma K-Nearest Neighbors (KNN) untuk content-based filtering. Model ini dipilih karena kesederhanaan dan efektivitasnya dalam mengidentifikasi item serupa berdasarkan fitur-fiturnya.
+- Menggunakan Singular Value Decomposition (SVD) untuk collaborative filtering. SVD dapat menemukan faktor-faktor laten yang menjelaskan interaksi pengguna-item, sehingga cocok untuk menghasilkan rekomendasi berdasarkan perilaku dan preferensi pengguna di masa lalu.
+- Mengevaluasi kinerja sistem menggunakan metrik precision@k dan Root Mean Squared Error (RMSE). Metrik-metrik ini membantu menilai akurasi dan relevansi rekomendasi yang diberikan oleh sistem.
 
 ## Data Understanding
 
 Dataset yang digunakan dalam proyek ini berjudul bookdfcleaned.csv(6 kolom, 267790 baris) dan userdfcleaned.csv(4 kolom, 433671 baris). Dataset ini dapat diakses melalui tautan berikut: https://www.kaggle.com/datasets/adnamard/book-recomendation-good-for-ncf
-Dataset ini berisi informasi tentang buku dan rating oleh pengguna dan bertujuan untuk mendukung pembangunan sistem rekomendasi berbasis content-based maupun collaborative filtering guna memprediksi buku-buku yang sesuai dengan preferensi pembaca.
+Dataset ini berisi informasi tentang buku dan rating oleh pengguna yang dapat mendukung pembangunan sistem rekomendasi berbasis content-based maupun collaborative filtering guna memprediksi buku-buku yang sesuai dengan preferensi pembaca.
 
 ### Variabel pada Dataset
 Berikut adalah daftar fitur (variabel) yang tersedia dalam dataset:
@@ -47,13 +45,13 @@ df_books = bookdfcleaned.csv
 df_user = userdfcleaned.csv
 - User_id: ID unik untuk setiap pengguna.
 - ISBN: Nomor identifikasi buku yang diberi rating oleh pengguna.
-- Rating: Nilai rating yang diberikan pengguna untuk buku tersebut.
+- Rating: Nilai rating yang diberikan pengguna untuk buku tersebut(0-10).
 - Age: Usia pengguna.
 
 ### Eksplorasi Data dan Visualisasi
 Beberapa langkah eksplorasi data dilakukan untuk memahami karakteristik data:
 - Informasi Dataset.
-Dataset terdiri dari kolom numerik dan kategorikal.
+  - Dataset terdiri dari kolom numerik dan kategorikal.
 - Distribusi Variabel Numerik.
 df_books:
 Terlihat outlier pada kolom PublicationYear.
