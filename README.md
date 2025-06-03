@@ -53,37 +53,33 @@ Beberapa langkah eksplorasi data dilakukan untuk memahami karakteristik data:
 - Informasi Dataset.
   - Dataset terdiri dari kolom numerik dan kategorikal.
 - Distribusi Variabel Numerik.
-df_books:
-Terlihat outlier pada kolom PublicationYear.
-df_user:
-Terlihat outlier pada kolom Age. Sementara kolom Rating masih sesuai dengan rentang 0-10.
+  - df_books: Terlihat outlier pada kolom PublicationYear.
+  - df_user: Terlihat outlier pada kolom Age. Sementara kolom Rating masih sesuai dengan rentang 0-10.
 - Distribusi Variabel Kategorikal.
-df_books:
-Ditampilkan nilai 10 terbesar untuk kolom Author(teratas: Agatha Chirstie) dan Publisher(teratas: ).
-df_user:
-Ditampilkan nilai 10 terbesar untuk kolom User_id(teratas: ) dan ISBN(teratas: ).
+  - df_books: Ditampilkan nilai 10 terbesar untuk kolom Author(teratas: Agatha Chirstie) dan Publisher(teratas: Harlequin).
+  - df_user: Ditampilkan nilai 10 terbesar untuk kolom User_id(teratas: 11676) dan ISBN(teratas: 0316666343).
 
 ## Data Preparation
 
 Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan kedua dataset dalam kondisi bersih dan siap digunakan untuk membangun sistem rekomendasi:
 
 1. Pemeriksaan Missing Values
-- Langkah: Dilakukan pengecekan nilai kosong pada kedua dataset (books dan user) menggunakan .isnull().sum().
-Hasil: Dataset books mengandung sejumlah nilai kosong, khususnya pada kolom publisher, author, dan year_of_publication, sementara dataset ratings tidak memiliki missing values.
-- Tindakan: Baris dengan nilai kosong pada data books dihapus.
-- Alasan: Nilai kosong dapat mengganggu proses analisis data dan presentasenya kecil terhadap jumlah keseluruhan dataset.
+- Langkah: Dilakukan pengecekan missing values pada kedua dataset (books dan user) menggunakan .isnull().sum().
+- Hasil: Dataset df_books mengandung missing values pada kolom Title dan Publisher. Sementara dataset df_user tidak memiliki missing values.
+- Tindakan: Baris dengan missing values pada df_books dihapus karena presentasenya kecil terhadap jumlah keseluruhan dataset.
+- Alasan: Missing values dapat mengganggu proses analisis data.
 2. Pemeriksaan Duplikasi Data
 - Langkah: Diterapkan fungsi .duplicated() pada kedua dataset.
 - Hasil: Tidak ditemukan data duplikat di kedua dataset.
 - Alasan: Duplikasi dapat menyebabkan distorsi dalam pembelajaran model dan akurasi rekomendasi.
 3. Pemeriksaan dan Deteksi Outlier
 - Langkah: Data numerik dianalisis untuk memastikan nilai berada dalam rentang valid.
-- Hasil: Beberapa nilai di kolom Publication Year dan Age terdeteksi sebagai outlier/invalid dan dihapus.
+- Hasil: Beberapa nilai di kolom PublicationYear dan Age terdeteksi sebagai outlier dihapus karena presentasenya kecil terhadap jumlah keseluruhan dataset.
 - Alasan: Nilai outlier dalam sistem rekomendasi dapat menurunkan kualitas model.
 
 ## Modeling
 
-Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kepada pengguna. Dua pendekatan yang digunakan adalah **Content-Based Filtering** menggunakan *Nearest Neighbors* dan **Collaborative Filtering** menggunakan algoritma *Singular Value Decomposition (SVD)*. Kedua model ini dievaluasi dan dibandingkan performanya menggunakan metrik RMSE.
+Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kepada pengguna. Dua pendekatan yang digunakan adalah Content-Based Filtering menggunakan Nearest Neighbors dan Collaborative Filtering menggunakan algoritma Singular Value Decomposition (SVD). Kedua model ini kemudian dievaluasi.
 
 ### Content-Based Filtering (Nearest Neighbors)
 
@@ -105,7 +101,7 @@ Model ini merekomendasikan buku berdasarkan kemiripan konten (fitur buku), bukan
 - Metode pengukuran yang digunakan adalah cosine similarity, yang mengukur sudut antar dua vektor. Semakin kecil sudutnya, semakin mirip kedua buku tersebut.
 3. Pencarian Buku Serupa:
 - Ketika pengguna memilih sebuah buku, sistem akan mencari n buku terdekat dengan nilai cosine similarity tertinggi.
-- nRekomendasi diberikan berdasarkan urutan kemiripan dari hasil model Nearest Neighbors.
+- n rekomendasi diberikan berdasarkan urutan kemiripan dari hasil model Nearest Neighbors.
 
 * **Parameter:**
 
