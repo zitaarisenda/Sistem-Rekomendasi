@@ -79,113 +79,64 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 
 ## Modeling
 
-Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kepada pengguna. Dua pendekatan yang digunakan adalah Content-Based Filtering menggunakan Nearest Neighbors dan Collaborative Filtering menggunakan algoritma Singular Value Decomposition (SVD). Kedua model ini kemudian dievaluasi.
+Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kepada pengguna. Dua pendekatan yang digunakan adalah Content-Based Filtering menggunakan Nearest Neighbors dan Collaborative Filtering menggunakan algoritma Singular Value Decomposition (SVD).
 
 ### Content-Based Filtering (Nearest Neighbors)
 
-Model ini merekomendasikan buku berdasarkan kemiripan konten (fitur buku), bukan dari interaksi pengguna. Kemiripan dihitung berdasarkan fitur seperti *book title*, lalu diolah menggunakan teknik representasi teks *TF-IDF* dan dihitung jaraknya menggunakan *cosine similarity*. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
+Model ini merekomendasikan buku berdasarkan kemiripan fitur buku, bukan dari interaksi pengguna. Kemiripan dihitung berdasarkan fitur, lalu diolah menggunakan teknik representasi teks TF-IDF dan dihitung jaraknya menggunakan cosine similarity. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
 
-* **Tahapan:**
+- Cara Kerja:
+  - Menggunakan TfidfVectorizer untuk mengubah fitur buku menjadi vektor numerik.
+  - Menghitung kemiripan antar buku menggunakan NearestNeighbors berbasis cosine distance.
+  - Ketika pengguna memilih sebuah buku, sistem mencari buku serupa berdasarkan nilai cosine similarity.
 
-  * Menggunakan `TfidfVectorizer` untuk mengubah judul buku menjadi vektor numerik.
-  * Menghitung kemiripan antar buku menggunakan `NearestNeighbors` berbasis cosine distance.
-  * Ketika pengguna memilih sebuah buku, sistem mencari buku serupa berdasarkan nilai cosine similarity.
+- Parameter:
+  - text_features = (Title * 3) + (Author * 3) + PublicationYear + Publisher
+  - ngram_range = (1, 2)
+  - stop_words = 'english'
+  - max_features = 10000
+  - metric = 'cosine'
+  - algorithm = 'brute'
+  - top_n = 20
 
-* **Cara Kerja:**
+- Kelebihan:
+  - Tidak memerlukan data interaksi pengguna.
+  - Dapat digunakan untuk pengguna baru.
+  - Interpretasi hasil mudah karena berbasis kemiripan konten.
 
-1. Ekstraksi Fitur Konten:
-- Hanya fitur Book-Title yang digunakan karena fitur ini tersedia secara konsisten dan relevan untuk mirip-miripan konten.
-- Representasi teks Book-Title diubah menjadi vektor numerik menggunakan TF-IDF Vectorization, yaitu metode yang memberi bobot lebih tinggi untuk kata-kata yang unik dalam dokumen dan rendah untuk kata-kata umum.
-2. Pengukuran Kemiripan:
-- Setelah setiap judul buku diubah menjadi vektor TF-IDF, digunakan algoritma Nearest Neighbors untuk menghitung kemiripan antar buku.
-- Metode pengukuran yang digunakan adalah cosine similarity, yang mengukur sudut antar dua vektor. Semakin kecil sudutnya, semakin mirip kedua buku tersebut.
-3. Pencarian Buku Serupa:
-- Ketika pengguna memilih sebuah buku, sistem akan mencari n buku terdekat dengan nilai cosine similarity tertinggi.
-- n rekomendasi diberikan berdasarkan urutan kemiripan dari hasil model Nearest Neighbors.
-
-* **Parameter:**
-
-
-text_features = (Title * 3) + (Author * 3) + PublicationYear + Publisher
-
-ngram_range = (1, 2)
-
-stop_words = 'english'
-
-max_features = 10000
-
-metric = 'cosine'
-
-algorithm = 'brute'
-
-top_n = 20
-
-* **Kelebihan:**
-
-  * Tidak memerlukan data interaksi pengguna.
-  * Dapat digunakan untuk pengguna baru (cold start).
-  * Interpretasi hasil mudah karena berbasis kemiripan konten.
-
-* **Kekurangan:**
-
-  * Tidak mempertimbangkan selera pengguna secara personal.
-  * Rekomendasi terbatas pada kesamaan permukaan (judul saja).
+- Kekurangan:
+  - Tidak mempertimbangkan selera pengguna secara personal.
+  - Rekomendasi terbatas pada kesamaan fitur buku.
 
 ### Collaborative Filtering (SVD)
 
-SVD merupakan metode *matrix factorization* yang mempelajari representasi tersembunyi (latent factors) dari pengguna dan buku berdasarkan pola rating. Model ini dapat memberikan rekomendasi personal yang lebih akurat dengan memanfaatkan hubungan tidak langsung antara pengguna dan item.
+SVD merupakan metode matrix factorization yang mempelajari representasi tersembunyi (latent factors) dari pengguna dan buku berdasarkan rating. Model ini dapat memberikan rekomendasi personal yang lebih akurat dengan memanfaatkan hubungan tidak langsung antara pengguna dan item.
 
-* **Tahapan:**
+- Cara Kerja:
+  - Menggunakan algoritma SVD dari pustaka Surprise.
+  - Dataset df_user diubah menjadi format Surprise Dataset.
+  - Model dilatih menggunakan k-fold cross-validation.
+  - Performa dievaluasi menggunakan RMSE.
 
-  * Menggunakan algoritma `SVD` dari pustaka Surprise.
-  * Dataset `ratings.csv` diubah menjadi format Surprise Dataset.
-  * Model dilatih menggunakan k-fold cross-validation.
-  * Performa dievaluasi menggunakan RMSE.
+- Parameter:
+  - rating_scale = (0, 10)
+  - test_size = 0.2
+  - random_state = 42
+  - model = SVD()
+  - n = 20 
+- Parameter Default:
+  - n_factors = 100
+  - n_epochs = 20
+  - lr_all = 0.005
+  - reg_all = 0.02
 
-* **Cara Kerja:**
-1. Pembentukan User-Item Matrix:
-- Dataset ratings.csv digunakan untuk membentuk matriks 2D (baris = pengguna, kolom = buku), dengan isian berupa nilai rating.
-- Matriks ini sangat sparse (banyak nilai kosong), karena sebagian besar pengguna hanya memberi rating pada sedikit buku.
-2. Matrix Factorization (SVD):
-- SVD memfaktorkan matriks besar ini menjadi 3 matriks kecil:
-Matriks pengguna ke latent space, matriks singular values (bobot penting), dan matriks item ke latent space.
-Dengan demikian, sistem bisa memperkirakan rating yang belum pernah diberikan oleh seorang pengguna terhadap sebuah buku, berdasarkan pola dari pengguna dan item serupa.
-3. Prediksi Rating dan Rekomendasi:
-- Setelah model dilatih, sistem dapat memprediksi rating yang mungkin diberikan seorang pengguna terhadap buku-buku yang belum ia baca.
-- Buku dengan prediksi rating tertinggi direkomendasikan ke pengguna.
+- Kelebihan:
+  - Mempertimbangkan preferensi pengguna secara menyeluruh.
+  - Mampu memberikan rekomendasi personal dan relevan.
 
-* **Parameter:**
-
-rating_scale = (0, 10) ← pada Reader
-
-test_size = 0.2 ← pada train_test_split
-
-random_state = 42 ← untuk reproduksibilitas split
-
-model = SVD() ← default SVD dari surprise (pakai default param)
-
-n = 20 
-
-Default
-
-n_factors = 100
-
-n_epochs = 20
-
-lr_all = 0.005
-
-reg_all = 0.02
-
-* **Kelebihan:**
-
-  * Mempertimbangkan preferensi pengguna secara menyeluruh.
-  * Mampu memberikan rekomendasi personal dan relevan.
-  * Menangani data sparsity dengan baik.
-
-* **Kekurangan:**
-
-  * Membutuhkan cukup banyak data rating historis.
-  * Kurang cocok untuk pengguna baru (cold start).
+- Kekurangan:
+  - Membutuhkan cukup banyak data rating historis.
+  - Kurang cocok untuk pengguna baru.
 
 ## Evaluation
 
@@ -193,7 +144,7 @@ Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dala
 
 ### Metrik Evaluasi yang Digunakan
 1. Cosine Similarity (untuk Content-Based Filtering)
-Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari judul buku. Nilainya berada di antara 0 (tidak mirip) hingga 1 (sangat mirip).
+Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari fitur buku.
 
 
 Interpretasi:
@@ -204,7 +155,7 @@ Digunakan untuk mengukur seberapa besar rata-rata kesalahan antara nilai prediks
 
 
 Interpretasi:
-Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 1–10, RMSE di atas 1.5 tergolong tinggi.
+Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 1–10.
 
 ### Hasil Evaluasi Model
 1. Content-Based Filtering
