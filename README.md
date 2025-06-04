@@ -143,28 +143,24 @@ SVD merupakan metode matrix factorization yang mempelajari representasi tersembu
 Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dalam memberikan saran buku yang relevan bagi pengguna. Karena sistem rekomendasi bekerja tanpa label target yang eksplisit, maka evaluasi dilakukan dengan pendekatan yang berbeda untuk masing-masing metode.
 
 ### Metrik Evaluasi yang Digunakan
-1. Cosine Similarity (untuk Content-Based Filtering)
-Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari fitur buku.
+- Cosine Similarity (untuk Content-Based Filtering)
+  - Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari fitur buku.
+    <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-03%20172747.png" width="500"/>
+  - Interpretasi: Jika hasil cosine similarity mendekati 1, maka buku-buku tersebut sangat mirip secara konten (berdasarkan teks judul); mendekati 0 berarti tidak mirip.
 
-
-Interpretasi:
-Jika hasil cosine similarity mendekati 1, maka buku-buku tersebut sangat mirip secara konten (berdasarkan teks judul); mendekati 0 berarti tidak mirip.
-
-2. Root Mean Squared Error (RMSE) (untuk Collaborative Filtering - SVD)
-Digunakan untuk mengukur seberapa besar rata-rata kesalahan antara nilai prediksi dan nilai aktual rating pengguna terhadap buku.
-
-
-Interpretasi:
-Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 1–10.
+- Root Mean Squared Error (RMSE) (untuk Collaborative Filtering - SVD)
+  - Digunakan untuk mengukur seberapa besar rata-rata kesalahan antara nilai prediksi dan nilai aktual rating pengguna terhadap buku.
+    <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-03%20172800.png" width="500"/>
+  - Interpretasi: Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 0–10.
 
 ### Hasil Evaluasi Model
 1. Content-Based Filtering
-- Eksperimen dilakukan terhadap pengguna dengan ID 278633. Dari hasil evaluasi:
+- Eksperimen dilakukan terhadap pengguna dengan ID 278633.
 - Rata-rata cosine similarity antara buku yang disukai dan buku hasil rekomendasi: 0.005
-- Interpretasi: Nilai similarity yang sangat rendah menunjukkan bahwa buku yang direkomendasikan belum terlalu mirip dengan buku yang disukai pengguna. Ini bisa disebabkan oleh keterbatasan fitur yang digunakan (judul saja) atau sparsenya preferensi pengguna.
+- Interpretasi: Nilai similarity yang sangat rendah menunjukkan bahwa buku yang direkomendasikan belum terlalu mirip dengan buku yang disukai pengguna. Ini bisa disebabkan oleh keterbatasan fitur yang digunakan atau sparsenya preferensi pengguna.
 
 2. Collaborative Filtering (SVD)
 - Evaluasi dilakukan menggunakan dataset uji yang dihasilkan dari Surprise train_test_split.
 - RMSE: 1.6
-- Skala rating: 1 hingga 10
-- Interpretasi: RMSE sebesar 1.6 menunjukkan bahwa terdapat rata-rata kesalahan prediksi sekitar 1.6 poin dari rating sebenarnya. Nilai ini cukup besar, menandakan bahwa model masih memiliki ruang untuk perbaikan, misalnya dengan tuning parameter, menambah data, atau menggunakan teknik lain seperti matrix factorization lanjutan.
+- Skala rating: 0 hingga 10
+- Interpretasi: RMSE sebesar 1.6 menunjukkan bahwa terdapat rata-rata kesalahan prediksi sekitar 1.6 poin dari rating sebenarnya. Nilai ini cukup besar, menandakan bahwa model masih memiliki ruang untuk perbaikan.
