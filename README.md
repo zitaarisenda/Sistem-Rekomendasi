@@ -77,7 +77,7 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Hasil: Beberapa nilai di kolom PublicationYear dan Age terdeteksi sebagai outlier dihapus karena presentasenya kecil terhadap jumlah keseluruhan dataset.
 - Alasan: Nilai outlier dalam sistem rekomendasi dapat menurunkan kualitas model.
 4. Konversi Tipe Data Kolom PublicationYear
-- Langkah: Mengubah tipe data kolom PublicationYear dari numerik (biasanya integer) menjadi string (str) menggunakan fungsi .astype().
+- Langkah: Mengubah tipe data kolom PublicationYear dari numerik (integer) menjadi string (str) menggunakan fungsi .astype().
 - Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
 - Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
 
