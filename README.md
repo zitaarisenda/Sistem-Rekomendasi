@@ -28,7 +28,7 @@ Evaluasi ini diperlukan untuk mengetahui seberapa baik model dalam memprediksi r
 
 ## Data Understanding
 
-Dataset yang digunakan dalam proyek ini berjudul bookdfcleaned.csv(6 kolom, 267790 baris) dan userdfcleaned.csv(4 kolom, 433671 baris). Dataset ini dapat diakses melalui tautan berikut: https://www.kaggle.com/datasets/adnamard/book-recomendation-good-for-ncf
+Dataset yang digunakan dalam proyek ini berjudul bookdfcleaned.csv (6 kolom, 267790 baris) dan userdfcleaned.csv (4 kolom, 433671 baris). Dataset ini dapat diakses melalui tautan berikut: https://www.kaggle.com/datasets/adnamard/book-recomendation-good-for-ncf
 Dataset ini berisi informasi tentang buku dan rating oleh pengguna yang dapat mendukung pembangunan sistem rekomendasi berbasis content-based maupun collaborative filtering guna memprediksi buku-buku yang sesuai dengan preferensi pembaca.
 
 ### Variabel pada Dataset
@@ -56,8 +56,8 @@ Beberapa langkah eksplorasi data dilakukan untuk memahami karakteristik data:
   - df_books: Terlihat outlier pada kolom PublicationYear.
   - df_user: Terlihat outlier pada kolom Age. Sementara kolom Rating masih sesuai dengan rentang 0-10.
 - Distribusi Variabel Kategorikal.
-  - df_books: Ditampilkan nilai 10 terbesar untuk kolom Author(teratas: Agatha Chirstie) dan Publisher(teratas: Harlequin).
-  - df_user: Ditampilkan nilai 10 terbesar untuk kolom User_id(teratas: 11676) dan ISBN(teratas: 0316666343).
+  - df_books: Ditampilkan nilai 10 terbesar untuk kolom Author (teratas: Agatha Chirstie) dan Publisher (teratas: Harlequin).
+  - df_user: Ditampilkan nilai 10 terbesar untuk kolom User_id (teratas: 11676) dan ISBN (teratas: 0316666343).
 
 ## Data Preparation
 
@@ -159,7 +159,7 @@ Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dala
 1. Content-Based Filtering
 - Eksperimen dilakukan terhadap pengguna dengan ID 278633.
 - Rata-rata cosine similarity antara buku yang disukai dan buku hasil rekomendasi: 0.005
-- Interpretasi: Nilai similarity yang sangat rendah menunjukkan bahwa buku yang direkomendasikan belum terlalu mirip dengan buku yang disukai pengguna. Ini bisa disebabkan oleh keterbatasan fitur yang digunakan atau sparsenya preferensi pengguna.
+- Interpretasi: Nilai similarity yang sangat rendah menunjukkan bahwa buku yang direkomendasikan belum terlalu mirip dengan buku yang disukai pengguna. Ini bisa disebabkan oleh keterbatasan fitur yang digunakan.
 
 2. Collaborative Filtering (SVD)
 - Evaluasi dilakukan menggunakan dataset uji yang dihasilkan dari Surprise train_test_split.
