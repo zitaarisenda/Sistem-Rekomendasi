@@ -81,7 +81,7 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
 - Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
 
-## Modeling
+## Modeling and Result
 
 Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kepada pengguna. Dua pendekatan yang digunakan adalah Content-Based Filtering menggunakan Nearest Neighbors dan Collaborative Filtering menggunakan algoritma Singular Value Decomposition (SVD).
 
@@ -111,6 +111,12 @@ Model ini merekomendasikan buku berdasarkan kemiripan fitur buku, bukan dari int
 - Kekurangan:
   - Tidak mempertimbangkan selera pengguna secara personal.
   - Rekomendasi terbatas pada kesamaan fitur buku.
+ 
+- Hasil Rekomendasi Top 20:
+  
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/content1.png" width="500"/>
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-04%20195827.png" width="500"/>
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-04%20195929.png" width="500"/>
 
 ### Collaborative Filtering (SVD)
 
@@ -141,6 +147,12 @@ SVD merupakan metode matrix factorization yang mempelajari representasi tersembu
 - Kekurangan:
   - Membutuhkan cukup banyak data rating historis.
   - Kurang cocok untuk pengguna baru.
+
+- Hasil Rekomendasi Top 20:
+
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-04%20200654.png" width="1000"/>
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-04%20200023.png" width="1000"/>
+  <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-04%20200039.png" width="1000"/>
 
 ## Evaluation
 
