@@ -29,7 +29,7 @@ Evaluasi ini diperlukan untuk mengetahui seberapa baik model dalam memprediksi r
 ## Data Understanding
 
 Dataset yang digunakan dalam proyek ini berjudul bookdfcleaned.csv (6 kolom, 267790 baris) dan userdfcleaned.csv (4 kolom, 433671 baris). Dataset ini dapat diakses melalui tautan berikut: https://www.kaggle.com/datasets/adnamard/book-recomendation-good-for-ncf
-Dataset ini berisi informasi tentang buku dan rating oleh pengguna yang dapat mendukung pembangunan sistem rekomendasi berbasis content-based maupun collaborative filtering guna memprediksi buku-buku yang sesuai dengan preferensi pembaca.
+Dataset ini berisi informasi tentang buku dan rating oleh pengguna yang dapat mendukung pembangunan sistem rekomendasi berbasis content-based maupun collaborative filtering guna memprediksi buku-buku yang sesuai dengan preferensi pembaca. Data sudah terstruktur meskipun memerlukan penanganan outlier di langkah selanjutnya.
 
 ### Variabel pada Dataset
 Berikut adalah daftar fitur (variabel) yang tersedia dalam dataset:
@@ -52,10 +52,10 @@ df_user = userdfcleaned.csv
 Beberapa langkah eksplorasi data dilakukan untuk memahami karakteristik data:
 - Informasi Dataset.
   - Dataset terdiri dari kolom numerik dan kategorikal.
-- Distribusi Variabel Numerik.
+- Distribusi Variabel Numerik dengan Histogram.
   - df_books: Terlihat outlier pada kolom PublicationYear.
   - df_user: Terlihat outlier pada kolom Age. Sementara kolom Rating masih sesuai dengan rentang 0-10.
-- Distribusi Variabel Kategorikal.
+- Distribusi Variabel Kategorikal dengan Bar Chart.
   - df_books: Ditampilkan nilai 10 terbesar untuk kolom Author (teratas: Agatha Chirstie) dan Publisher (teratas: Harlequin).
   - df_user: Ditampilkan nilai 10 terbesar untuk kolom User_id (teratas: 11676) dan ISBN (teratas: 0316666343).
 
@@ -76,6 +76,10 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Langkah: Data numerik dianalisis untuk memastikan nilai berada dalam rentang valid.
 - Hasil: Beberapa nilai di kolom PublicationYear dan Age terdeteksi sebagai outlier dihapus karena presentasenya kecil terhadap jumlah keseluruhan dataset.
 - Alasan: Nilai outlier dalam sistem rekomendasi dapat menurunkan kualitas model.
+4. Konversi Tipe Data Kolom PublicationYear
+- Langkah: Mengubah tipe data kolom PublicationYear dari numerik (biasanya integer) menjadi string (str) menggunakan fungsi .astype().
+- Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
+- Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
 
 ## Modeling
 
