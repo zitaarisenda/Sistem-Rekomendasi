@@ -145,11 +145,13 @@ Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dala
 ### Metrik Evaluasi yang Digunakan
 - Cosine Similarity (untuk Content-Based Filtering)
   - Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari fitur buku.
+    
     <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-03%20172747.png" width="500"/>
   - Interpretasi: Jika hasil cosine similarity mendekati 1, maka buku-buku tersebut sangat mirip secara konten (berdasarkan teks judul); mendekati 0 berarti tidak mirip.
 
 - Root Mean Squared Error (RMSE) (untuk Collaborative Filtering - SVD)
   - Digunakan untuk mengukur seberapa besar rata-rata kesalahan antara nilai prediksi dan nilai aktual rating pengguna terhadap buku.
+    
     <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-03%20172800.png" width="500"/>
   - Interpretasi: Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 0–10.
 
