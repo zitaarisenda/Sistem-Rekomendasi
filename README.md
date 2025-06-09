@@ -52,9 +52,15 @@ df_user = userdfcleaned.csv
 Beberapa langkah eksplorasi data dilakukan untuk memahami karakteristik data:
 - Informasi Dataset.
   - Dataset terdiri dari kolom numerik dan kategorikal.
+  - Jumlah missing values df_books: Title: 49, Publisher 57
+  - Jumlah missing values df_user: 0
+  - Jumlah outlier df_books: PublicationYear: 5524
+  - Jumlah outlier df_user: Rating: 10525, Age: 3344
+  - Jumlah data duplikat df_books: 0
+  - Jumlah data duplikat df_user: 0
 - Distribusi Variabel Numerik dengan Histogram.
   - df_books: Terlihat outlier pada kolom PublicationYear.
-  - df_user: Terlihat outlier pada kolom Age. Sementara kolom Rating masih sesuai dengan rentang 0-10.
+  - df_user: Terlihat outlier pada kolom Age. Sementara kolom Rating juga memiliki outlier namun masih sesuai dengan rentang 0-10.
 - Distribusi Variabel Kategorikal dengan Bar Chart.
   - df_books: Ditampilkan nilai 10 terbesar untuk kolom Author (teratas: Agatha Chirstie) dan Publisher (teratas: Harlequin).
   - df_user: Ditampilkan nilai 10 terbesar untuk kolom User_id (teratas: 11676) dan ISBN (teratas: 0316666343).
@@ -80,6 +86,8 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Langkah: Mengubah tipe data kolom PublicationYear dari numerik (integer) menjadi string (str) menggunakan fungsi .astype().
 - Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
 - Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
+5. Pembuatan Fitur text_features untuk df_books
+- Langkah: Menggunakan TfidfVectorizer untuk mengubah fitur buku menjadi vektor numerik.
 
 ## Modeling and Result
 
@@ -90,7 +98,7 @@ Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kep
 Model ini merekomendasikan buku berdasarkan kemiripan fitur buku, bukan dari interaksi pengguna. Kemiripan dihitung berdasarkan fitur, lalu diolah menggunakan teknik representasi teks TF-IDF dan dihitung jaraknya menggunakan cosine similarity. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
 
 - Cara Kerja:
-  - Menggunakan TfidfVectorizer untuk mengubah fitur buku menjadi vektor numerik.
+  - 
   - Menghitung kemiripan antar buku menggunakan NearestNeighbors berbasis cosine distance.
   - Ketika pengguna memilih sebuah buku, sistem mencari buku serupa berdasarkan nilai cosine similarity.
 
