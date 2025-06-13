@@ -86,8 +86,10 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Langkah: Mengubah tipe data kolom PublicationYear dari numerik (integer) menjadi string (str) menggunakan fungsi .astype().
 - Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
 - Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
-5. Pembuatan Fitur text_features untuk df_books
-- Langkah: Menggunakan TfidfVectorizer untuk mengubah fitur buku menjadi vektor numerik.
+5. Pembuatan Fitur text_features dan TF-IDF Vectorization untuk df_books
+- Langkah: Beberapa kolom teks yang relevan seperti Title, Author, PublicationYear, dan Publisher digabungkan menjadi satu kolom baru bernama text_features. Untuk menekankan pentingnya informasi dari judul dan penulis buku dalam menentukan kemiripan konten, nilai dari kolom Title dan Author diberi bobot lebih tinggi dengan cara mengulang (mengalikan) masing-masing sebanyak tiga kali sebelum digabungkan. Setelahnya, kolom gabungan ini diubah menjadi representasi numerik menggunakan TfidfVectorizer dengan pengaturan ngram (1,2) dan batas maksimum fitur sebanyak 10.000.
+- Hasil: Setiap buku direpresentasikan dalam bentuk vektor berbasis bobot kata yang mencerminkan pentingnya istilah-istilah dalam konteks seluruh koleksi buku.
+- Alasan: Pemberian bobot lebih besar pada Title dan Author bertujuan agar kata-kata dari dua kolom tersebut memiliki pengaruh lebih besar dalam perhitungan kemiripan antar buku, karena keduanya dianggap lebih relevan dalam mendeskripsikan isi dan karakteristik utama sebuah buku dibanding fitur lain seperti penerbit atau tahun terbit.
 
 ## Modeling and Result
 
@@ -95,18 +97,14 @@ Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kep
 
 ### Content-Based Filtering (Nearest Neighbors)
 
-Model ini merekomendasikan buku berdasarkan kemiripan fitur buku, bukan dari interaksi pengguna. Kemiripan dihitung berdasarkan fitur, lalu diolah menggunakan teknik representasi teks TF-IDF dan dihitung jaraknya menggunakan cosine similarity. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
+Model ini merekomendasikan buku berdasarkan kemiripan konten antar buku, bukan dari riwayat interaksi pengguna. Pendekatan ini memanfaatkan fitur teks yang telah diolah sebelumnya menggunakan TF-IDF untuk menghitung kesamaan antar buku. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
 
 - Cara Kerja:
-  - 
+  - Menggunakan vektor TF-IDF dari fitur text_features sebagai representasi masing-masing buku.
   - Menghitung kemiripan antar buku menggunakan NearestNeighbors berbasis cosine distance.
   - Ketika pengguna memilih sebuah buku, sistem mencari buku serupa berdasarkan nilai cosine similarity.
 
 - Parameter:
-  - text_features = (Title * 3) + (Author * 3) + PublicationYear + Publisher
-  - ngram_range = (1, 2)
-  - stop_words = 'english'
-  - max_features = 10000
   - metric = 'cosine'
   - algorithm = 'brute'
   - top_n = 20
