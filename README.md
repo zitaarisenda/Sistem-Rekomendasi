@@ -179,12 +179,12 @@ Pendekatan Collaborative Filtering menggunakan algoritma Singular Value Decompos
 Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dalam memberikan saran buku yang relevan bagi pengguna. Karena sistem rekomendasi bekerja tanpa label target yang eksplisit, maka evaluasi dilakukan dengan pendekatan yang berbeda untuk masing-masing metode.
 
 ### Metrik Evaluasi yang Digunakan
-- Cosine Similarity (untuk Content-Based Filtering)
-  - Digunakan untuk mengukur tingkat kemiripan antara dua dokumen vektor, dalam hal ini representasi TF-IDF dari fitur buku.
-    
-    <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/Screenshot%202025-06-03%20172747.png" width="500"/>
-  - Interpretasi: Jika hasil cosine similarity mendekati 1, maka buku-buku tersebut sangat mirip secara konten (berdasarkan teks judul); mendekati 0 berarti tidak mirip.
+- Precision@K (untuk Content-Based Filtering)
+  - Precision@K adalah metrik evaluasi yang mengukur proporsi item relevan di antara K item yang direkomendasikan. Dalam konteks sistem rekomendasi buku, precision@K menunjukkan seberapa banyak dari buku-buku yang direkomendasikan benar-benar termasuk dalam daftar buku yang disukai oleh pengguna (berdasarkan rating historis).
 
+    <img src="https://raw.githubusercontent.com/zitaarisenda/Sistem-Rekomendasi/main/image.png" width="500"/>
+  - Interpretasi: Nilai Precision@K yang tinggi menunjukkan bahwa sistem mampu memberikan rekomendasi yang relevan bagi pengguna. Sebaliknya, nilai yang rendah menunjukkan bahwa sebagian besar rekomendasi tidak sesuai dengan preferensi pengguna.
+  
 - Root Mean Squared Error (RMSE) (untuk Collaborative Filtering - SVD)
   - Digunakan untuk mengukur seberapa besar rata-rata kesalahan antara nilai prediksi dan nilai aktual rating pengguna terhadap buku.
     
@@ -192,13 +192,51 @@ Tahap evaluasi bertujuan untuk mengukur seberapa efektif sistem rekomendasi dala
   - Interpretasi: Semakin kecil nilai RMSE, semakin dekat prediksi model ke nilai sebenarnya. RMSE = 0 artinya prediksi sempurna. Dalam konteks rating skala 0–10.
 
 ### Hasil Evaluasi Model
-1. Content-Based Filtering
-- Eksperimen dilakukan terhadap pengguna dengan ID 278633.
-- Rata-rata cosine similarity antara buku yang disukai dan buku hasil rekomendasi: 0.005
-- Interpretasi: Nilai similarity yang sangat rendah menunjukkan bahwa buku yang direkomendasikan belum terlalu mirip dengan buku yang disukai pengguna. Ini bisa disebabkan oleh keterbatasan fitur yang digunakan.
+1. Content-Based Filtering (Nearest Neighbors)
+- Evaluasi dilakukan pada 100 pengguna pertama untuk mengurangi waktu komputasi, mengingat ukuran dataset yang besar (267.790 buku dan 433.671 interaksi). Proses evaluasi penuh terlalu berat karena setiap pengguna dibandingkan dengan seluruh koleksi buku.
+  - Metrik: Precision@10
+  - Hasil: 0.0057 (sekitar 0,57%)
+- Interpretasi:
+  - Nilai precision yang rendah menunjukkan bahwa sebagian besar rekomendasi belum sesuai dengan preferensi pengguna. Hal ini kemungkinan disebabkan oleh:
+    - Fitur teks terbatas (judul, penulis, tahun, penerbit)
+    - Tidak adanya personalisasi berdasarkan rating
+    - Data interaksi yang sangat sparse
+  - Meski begitu, Content-Based Filtering tetap bermanfaat untuk menangani kasus cold-start, khususnya saat item belum memiliki rating.
 
 2. Collaborative Filtering (SVD)
-- Evaluasi dilakukan menggunakan dataset uji yang dihasilkan dari Surprise train_test_split.
-- RMSE: 1.6
+- Evaluasi dilakukan menggunakan dataset uji yang dihasilkan dari fungsi train_test_split (pustaka Surprise).
+- Metrik yang digunakan: Root Mean Squared Error (RMSE)
+- Hasil RMSE: 1.6
 - Skala rating: 0 hingga 10
-- Interpretasi: RMSE sebesar 1.6 menunjukkan bahwa terdapat rata-rata kesalahan prediksi sekitar 1.6 poin dari rating sebenarnya. Nilai ini cukup besar, menandakan bahwa model masih memiliki ruang untuk perbaikan.
+- Interpretasi: Nilai RMSE sebesar 1.6 menunjukkan bahwa prediksi rating yang dihasilkan model memiliki rata-rata deviasi sebesar 1.6 poin dari rating aktual. Mengingat skala rating antara 0 hingga 10, nilai ini tergolong cukup besar. Hal ini menunjukkan bahwa model masih memiliki ruang untuk peningkatan akurasi.
+
+### Keterkaitan Model dengan Business Understanding
+Dua pendekatan yang telah diimplementasikan yakni Content-Based Filtering menggunakan K-Nearest Neighbors (KNN) dan Collaborative Filtering berbasis Singular Value Decomposition (SVD) secara langsung menjawab kedua problem statement dan mendukung pencapaian goals yang telah ditetapkan.
+
+1. Menjawab Problem Statement
+- Rekomendasi berbasis preferensi pengguna:
+  - Content-Based Filtering memanfaatkan fitur buku (judul, penulis, tahun, penerbit) yang direpresentasikan sebagai vektor TF-IDF. Kemudian, digunakan algoritma K-Nearest Neighbors dengan cosine similarity untuk menemukan buku yang paling mirip.
+  - Ini membantu pengguna menemukan buku lain yang sejenis dengan yang mereka sukai, bahkan tanpa perlu riwayat interaksi yang banyak.
+- Pemanfaatan data historis untuk rekomendasi dinamis:
+  - Collaborative Filtering dengan SVD mempelajari pola interaksi historis (rating) antara pengguna dan buku. Model ini dapat memberikan saran berdasarkan perilaku pengguna lain yang mirip, memungkinkan sistem belajar preferensi yang tidak eksplisit.
+
+🎯 Pencapaian Goals
+Kedua model berhasil dibangun dan dievaluasi menggunakan metrik yang sesuai:
+
+Precision@10 pada Content-Based Filtering menunjukkan nilai 0.0057 untuk 100 pengguna secara acak. Meski masih rendah, hasil ini memberi insight bahwa model perlu pengayaan fitur konten atau pendekatan hybrid untuk akurasi lebih baik.
+
+RMSE sebesar 1.6 untuk SVD menunjukkan bahwa rata-rata kesalahan prediksi masih sekitar 1.6 poin dari rating aktual (skala 0–10), yang menandakan adanya ruang perbaikan namun sudah berfungsi sebagai baseline model.
+
+Dengan implementasi dua pendekatan yang saling melengkapi, sistem rekomendasi dapat disesuaikan baik untuk pengguna baru (cold-start problem) maupun pengguna lama dengan banyak data interaksi.
+
+📌 Dampak dari Solusi yang Dirancang
+KNN untuk Content-Based Filtering:
+Cocok digunakan dalam situasi ketika data pengguna masih terbatas, seperti pengguna baru atau buku baru. Proses pencarian buku mirip dapat memberikan pengalaman eksplorasi yang lebih personal dan cepat.
+
+SVD untuk Collaborative Filtering:
+Memberikan personalisasi mendalam berdasarkan preferensi historis, cocok untuk pengguna aktif. Model ini memperkaya pengalaman pengguna dan meningkatkan loyalitas mereka terhadap platform.
+
+Evaluasi dengan Precision@k dan RMSE:
+Memberikan ukuran objektif terhadap kualitas rekomendasi dan menjadi dasar yang jelas untuk iterasi model berikutnya.
+
+
