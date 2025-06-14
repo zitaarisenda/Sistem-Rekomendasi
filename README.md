@@ -97,17 +97,28 @@ Pada tahap ini, dibangun dua model sistem rekomendasi untuk menyarankan buku kep
 
 ### Content-Based Filtering (Nearest Neighbors)
 
-Model ini merekomendasikan buku berdasarkan kemiripan konten antar buku, bukan dari riwayat interaksi pengguna. Pendekatan ini memanfaatkan fitur teks yang telah diolah sebelumnya menggunakan TF-IDF untuk menghitung kesamaan antar buku. Pendekatan ini tidak bergantung pada data rating, sehingga cocok digunakan bahkan saat data pengguna sangat terbatas.
+Pendekatan Content-Based Filtering merekomendasikan buku berdasarkan kemiripan konten antar item, bukan dari riwayat interaksi pengguna. Sistem ini mengidentifikasi buku-buku yang memiliki fitur serupa berdasarkan representasi tekstual, sehingga tetap dapat memberikan rekomendasi meskipun pengguna belum banyak berinteraksi dengan sistem (cold-start friendly).
 
 - Cara Kerja:
-  - Menggunakan vektor TF-IDF dari fitur text_features sebagai representasi masing-masing buku.
-  - Menghitung kemiripan antar buku menggunakan NearestNeighbors berbasis cosine distance.
-  - Ketika pengguna memilih sebuah buku, sistem mencari buku serupa berdasarkan nilai cosine similarity.
+  - Modeling dengan Nearest Neighbors
+
+    Vektor TF-IDF yang dihasilkan di proses preprocessing sebelumnya digunakan untuk menghitung kemiripan antar buku menggunakan algoritma NearestNeighbors dari scikit-learn dengan konfigurasi:
+    - metric='cosine': Menggunakan cosine similarity untuk mengukur kemiripan antar buku.
+    - algorithm='brute': Pendekatan pencarian eksak karena dataset tidak terlalu besar.
+
+  - Fungsi recommend_books()
+
+    Fungsi menerima input berupa judul buku dari pengguna, lalu:
+    - Mencari indeks buku berdasarkan judul yang dicari.
+    - Mengambil vektor TF-IDF dari buku tersebut.
+    - Menggunakan model NearestNeighbors untuk mencari buku lain yang paling mirip.
+    - Mengembalikan top-N rekomendasi berdasarkan skor kemiripan tertinggi, dengan mengabaikan buku itu sendiri.
 
 - Parameter:
-  - metric = 'cosine'
-  - algorithm = 'brute'
-  - top_n = 20
+  - metric = 'cosine' (untuk menghitung jarak kemiripan antar buku)
+  - algorithm = 'brute' (pencarian jarak eksak antar semua pasangan item)
+  - Model = NearestNeighbors() dari scikit-learn
+  - top_n = 20 (banyak buku yang paling mirip ditampilkan dalam hasil rekomendasi)
 
 - Kelebihan:
   - Tidak memerlukan data interaksi pengguna.
