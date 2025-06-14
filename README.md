@@ -87,7 +87,7 @@ Pada tahap ini, dilakukan serangkaian proses data preparation untuk memastikan k
 - Hasil: Nilai tahun terbit buku sekarang disimpan sebagai string.
 - Alasan: Dalam sistem rekomendasi berbasis konten, PublicationYear digunakan sebagai fitur kategorikal, bukan numerik.
 5. Pembuatan Fitur text_features dan TF-IDF Vectorization untuk df_books
-- Langkah: Beberapa kolom teks yang relevan seperti Title, Author, PublicationYear, dan Publisher digabungkan menjadi satu kolom baru bernama text_features. Untuk menekankan pentingnya informasi dari judul dan penulis buku dalam menentukan kemiripan konten, nilai dari kolom Title dan Author diberi bobot lebih tinggi dengan cara mengulang (mengalikan) masing-masing sebanyak tiga kali sebelum digabungkan. Setelahnya, kolom gabungan ini diubah menjadi representasi numerik menggunakan TfidfVectorizer dengan pengaturan ngram (1,2) dan batas maksimum fitur sebanyak 10.000.
+- Langkah: Beberapa kolom teks yang relevan seperti Title, Author, PublicationYear, dan Publisher digabungkan menjadi satu kolom baru bernama text_features. Untuk menekankan pentingnya informasi dari judul dan penulis buku dalam menentukan kemiripan konten, nilai dari kolom Title dan Author diberi bobot lebih tinggi dengan cara mengulang (mengalikan) masing-masing sebanyak tiga kali sebelum digabungkan. Setelahnya, kolom gabungan ini diubah menjadi representasi numerik menggunakan TfidfVectorizer dengan pengaturan ngram (1,2) untuk mengambil unigram dan bigram untuk menangkap konteks kata yang lebih luas, batas maksimum fitur sebanyak 10.000 untuk membatasi jumlah fitur maksimal untuk menghindari kompleksitas dan overfitting, serta stop_words='english' untuk menghapus kata-kata umum dalam bahasa Inggris yang tidak membawa makna penting.
 - Hasil: Setiap buku direpresentasikan dalam bentuk vektor berbasis bobot kata yang mencerminkan pentingnya istilah-istilah dalam konteks seluruh koleksi buku.
 - Alasan: Pemberian bobot lebih besar pada Title dan Author bertujuan agar kata-kata dari dua kolom tersebut memiliki pengaruh lebih besar dalam perhitungan kemiripan antar buku, karena keduanya dianggap lebih relevan dalam mendeskripsikan isi dan karakteristik utama sebuah buku dibanding fitur lain seperti penerbit atau tahun terbit.
 
@@ -107,8 +107,7 @@ Pendekatan Content-Based Filtering merekomendasikan buku berdasarkan kemiripan k
     - algorithm='brute': Pendekatan pencarian eksak karena dataset tidak terlalu besar.
 
   - Fungsi recommend_books()
-
-    Fungsi menerima input berupa judul buku dari pengguna, lalu:
+    - Fungsi menerima input berupa judul buku dari pengguna.
     - Mencari indeks buku berdasarkan judul yang dicari.
     - Mengambil vektor TF-IDF dari buku tersebut.
     - Menggunakan model NearestNeighbors untuk mencari buku lain yang paling mirip.
@@ -137,25 +136,29 @@ Pendekatan Content-Based Filtering merekomendasikan buku berdasarkan kemiripan k
 
 ### Collaborative Filtering (SVD)
 
-SVD merupakan metode matrix factorization yang mempelajari representasi tersembunyi (latent factors) dari pengguna dan buku berdasarkan rating. Model ini dapat memberikan rekomendasi personal yang lebih akurat dengan memanfaatkan hubungan tidak langsung antara pengguna dan item.
+Pendekatan Collaborative Filtering menggunakan algoritma Singular Value Decomposition (SVD) merupakan metode matrix factorization yang bertujuan mempelajari representasi tersembunyi (latent factors) dari pengguna dan item (buku) berdasarkan data interaksi berupa rating. Model ini mampu memberikan rekomendasi yang dipersonalisasi dengan mengidentifikasi pola tidak langsung dalam preferensi pengguna terhadap item yang berbeda.
 
 - Cara Kerja:
-  - Menggunakan algoritma SVD dari pustaka Surprise.
-  - Dataset df_user diubah menjadi format Surprise Dataset.
-  - Model dilatih menggunakan k-fold cross-validation.
-  - Performa dievaluasi menggunakan RMSE.
+  - Data rating dari df_user diubah menjadi format Surprise Dataset menggunakan objek Reader dengan skala nilai 0–10.
+  - Dataset dibagi menjadi data latih dan data uji dengan rasio 80:20 menggunakan train_test_split.
+  - Model SVD dilatih pada data latih, kemudian digunakan untuk memprediksi rating pengguna terhadap buku-buku yang belum pernah mereka beri rating.
+  - Fungsi recommend_books_for_user()
+    - Mengambil semua ISBN unik dari df_books.
+    - Menentukan ISBN yang belum diberi rating oleh pengguna.
+    - Menggunakan model SVD untuk memprediksi rating pengguna terhadap ISBN yang belum dilihat.
+    - Mengurutkan hasil prediksi dan memilih n buku dengan rating tertinggi.
+    - Menggabungkan ISBN hasil rekomendasi dengan informasi lengkap dari df_books.
 
 - Parameter:
-  - rating_scale = (0, 10)
-  - test_size = 0.2
-  - random_state = 42
-  - model = SVD()
-  - n = 20 
-- Parameter Default:
-  - n_factors = 100
-  - n_epochs = 20
-  - lr_all = 0.005
-  - reg_all = 0.02
+  - Algoritma:	SVD (Singular Value Decomposition) dari pustaka Surprise.
+  - n_factors	100 (default): Jumlah dimensi dalam representasi latent factors pengguna dan item. Semakin besar nilainya, semakin kompleks representasi yang dipelajari.
+  - n_epochs	20 (default): Jumlah iterasi pelatihan penuh terhadap dataset.
+  - lr_all	0.005 (default): Learning rate yang digunakan untuk semua parameter model.
+  - reg_all	0.02 (default): Nilai regulasi untuk mencegah overfitting dengan membatasi bobot model.
+  - rating_scale	(0, 10): Skala rating dari pengguna. Digunakan saat membangun objek Reader.
+  - test_size	0.2: Rasio data uji saat membagi dataset (80% latih, 20% uji).
+  - random_state	42: Nilai seed untuk memastikan hasil pembagian data yang konsisten dan reprodusibel.
+  - n=20: Jumlah buku yang direkomendasikan untuk setiap pengguna berdasarkan prediksi rating tertinggi.
 
 - Kelebihan:
   - Mempertimbangkan preferensi pengguna secara menyeluruh.
